@@ -1,0 +1,63 @@
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Supabase Configuration
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  # Client-side key
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # Admin key
+
+# OpenAI Configuration
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Application Settings
+SESSION_TIMEOUT = 3600  # 1 hour in seconds
+MAX_LOGIN_ATTEMPTS = 3
+PASSWORD_MIN_LENGTH = 8
+
+# UI Constants
+SUPPORT_OPTIONS = [
+    "Nothing specific",
+    "Hormonal balance and regular cycle",
+    "Getting back my period",
+    "More energy",
+    "Acne",
+    "Eat more nutritious in general",
+    "Digestive health/ Metabolism boost"
+]
+
+DIETARY_OPTIONS = [
+    "Vegan",
+    "Vegetarian",
+    "Nut allergy",
+    "Gluten free",
+    "Lactose intolerance"
+]
+
+CYCLE_PHASES = [
+    "Menstrual",
+    "Follicular",
+    "Ovulatory",
+    "Luteal"
+]
+
+# Error Messages
+ERROR_MESSAGES = {
+    "invalid_email": "Please enter a valid email address",
+    "password_too_short": f"Password must be at least {PASSWORD_MIN_LENGTH} characters long",
+    "password_mismatch": "Passwords do not match",
+    "user_exists": "An account with this email already exists",
+    "invalid_credentials": "Invalid email or password",
+    "session_expired": "Your session has expired. Please log in again",
+    "api_error": "An error occurred. Please try again later"
+}
+
+# Success Messages
+SUCCESS_MESSAGES = {
+    "registration": "Registration successful! Please check your email to verify your account",
+    "login": "Login successful!",
+    "settings_saved": "Your preferences have been saved successfully",
+    "password_reset": "Password reset instructions have been sent to your email"
+} 

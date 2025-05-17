@@ -262,5 +262,5 @@ class AuthService:
         self.supabase.table("password_resets").insert({
             "email": email,
             "token": token,
-            "expiry": expiry,
+            "expiry": expiry.isoformat(),
         }).execute()

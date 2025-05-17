@@ -29,13 +29,28 @@ class AuthService:
             print("Attempting to create Supabase client...")
             self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
             print("Supabase client created successfully")
-            # Test the connection
+            
+            # Test the connection with a simpler query
             print("Testing Supabase connection...")
-            test_response = self.supabase.table("users").select("count").limit(1).execute()
-            print(f"Connection test successful: {test_response}")
+            try:
+                # Just try to get the auth configuration
+                auth_config = self.supabase.auth.get_session()
+                print("Connection test successful - Auth configuration retrieved")
+            except Exception as auth_error:
+                print(f"Auth test failed: {str(auth_error)}")
+                # Try a simple table query as fallback
+                try:
+                    test_response = self.supabase.table("users").select("id").limit(1).execute()
+                    print("Connection test successful - Table query worked")
+                except Exception as table_error:
+                    print(f"Table test failed: {str(table_error)}")
+                    raise
         except Exception as e:
             print(f"Error creating Supabase client: {str(e)}")
             print(f"Error type: {type(e)}")
+            if hasattr(e, 'response'):
+                print(f"Response status: {e.response.status_code if hasattr(e.response, 'status_code') else 'N/A'}")
+                print(f"Response body: {e.response.text if hasattr(e.response, 'text') else 'N/A'}")
             raise
         self.email_service = EmailService()
         self.logger = LoggingService()

@@ -11,7 +11,7 @@ from config import ERROR_MESSAGES, SUCCESS_MESSAGES, SESSION_TIMEOUT
 
 # Load environment variables
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 auth_service = AuthService()

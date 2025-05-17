@@ -20,12 +20,19 @@ import secrets
 
 class AuthService:
     def __init__(self):
-        print(f"Initializing AuthService with URL: {SUPABASE_URL}")
-        print(f"Key exists: {bool(SUPABASE_KEY)}")
-        self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("=== AuthService Initialization ===")
+        print(f"SUPABASE_URL: {SUPABASE_URL}")
+        print(f"SUPABASE_KEY length: {len(SUPABASE_KEY) if SUPABASE_KEY else 0}")
+        try:
+            self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+            print("Supabase client created successfully")
+        except Exception as e:
+            print(f"Error creating Supabase client: {str(e)}")
+            raise
         self.email_service = EmailService()
         self.logger = LoggingService()
         self._validate_config()
+        print("=== AuthService Initialization Complete ===")
 
     def _validate_config(self):
         if not SUPABASE_URL or not SUPABASE_KEY:

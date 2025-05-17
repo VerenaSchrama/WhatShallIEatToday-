@@ -10,9 +10,11 @@ SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")  # Client-side key
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # Admin key
 
 # Debug logging
+print("=== Supabase Configuration Debug ===")
 print(f"SUPABASE_URL: {SUPABASE_URL}")
-print(f"SUPABASE_ANON_KEY exists: {bool(SUPABASE_ANON_KEY)}")
-print(f"SUPABASE_SERVICE_ROLE_KEY exists: {bool(SUPABASE_SERVICE_ROLE_KEY)}")
+print(f"SUPABASE_ANON_KEY length: {len(SUPABASE_ANON_KEY) if SUPABASE_ANON_KEY else 0}")
+print(f"SUPABASE_SERVICE_ROLE_KEY length: {len(SUPABASE_SERVICE_ROLE_KEY) if SUPABASE_SERVICE_ROLE_KEY else 0}")
+print("==================================")
 
 # Use anon key for client operations
 SUPABASE_KEY = SUPABASE_ANON_KEY

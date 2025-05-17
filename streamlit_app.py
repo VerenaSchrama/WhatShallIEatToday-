@@ -7,11 +7,15 @@ import os
 from utils import reset_session, load_llm_chain, add_to_chat_history
 from auth_service import AuthService
 from profile_service import ProfileService
-from config import ERROR_MESSAGES, SUCCESS_MESSAGES, SESSION_TIMEOUT
+from config import (
+    ERROR_MESSAGES, 
+    SUCCESS_MESSAGES, 
+    SESSION_TIMEOUT,
+    SUPABASE_URL,
+    SUPABASE_KEY
+)
 
-# Load environment variables
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+# Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 auth_service = AuthService()

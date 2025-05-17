@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple
 from supabase import create_client
 from config import (
     SUPABASE_URL,
-    SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_KEY,
     SUPPORT_OPTIONS,
     DIETARY_OPTIONS,
     CYCLE_PHASES,
@@ -15,7 +15,7 @@ from logging_service import LoggingService
 
 class ProfileService:
     def __init__(self):
-        self.supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
         self.logger = LoggingService()
 
     def get_profile(self, user_id: str) -> Tuple[bool, Dict, str]:

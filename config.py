@@ -11,7 +11,11 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # Admin key
 
 # Debug logging
 print(f"SUPABASE_URL: {SUPABASE_URL}")
+print(f"SUPABASE_ANON_KEY exists: {bool(SUPABASE_ANON_KEY)}")
 print(f"SUPABASE_SERVICE_ROLE_KEY exists: {bool(SUPABASE_SERVICE_ROLE_KEY)}")
+
+# Use anon key for client operations
+SUPABASE_KEY = SUPABASE_ANON_KEY
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

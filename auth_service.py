@@ -6,7 +6,7 @@ import jwt
 from supabase import create_client
 from config import (
     SUPABASE_URL,
-    SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_KEY,
     SESSION_TIMEOUT,
     PASSWORD_MIN_LENGTH,
     ERROR_MESSAGES,
@@ -21,14 +21,14 @@ import secrets
 class AuthService:
     def __init__(self):
         print(f"Initializing AuthService with URL: {SUPABASE_URL}")
-        print(f"Service key exists: {bool(SUPABASE_SERVICE_ROLE_KEY)}")
-        self.supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        print(f"Key exists: {bool(SUPABASE_KEY)}")
+        self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
         self.email_service = EmailService()
         self.logger = LoggingService()
         self._validate_config()
 
     def _validate_config(self):
-        if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        if not SUPABASE_URL or not SUPABASE_KEY:
             raise ValueError("Supabase configuration is missing")
 
     def _validate_email(self, email: str) -> bool:
@@ -57,7 +57,7 @@ class AuthService:
             'user_id': user_id,
             'exp': datetime.utcnow() + timedelta(seconds=SESSION_TIMEOUT)
         }
-        return jwt.encode(payload, SUPABASE_SERVICE_ROLE_KEY, algorithm='HS256')
+        return jwt.encode(payload, SUPABASE_KEY, algorithm='HS256')
 
     def register_user(self, email: str, password: str) -> tuple[bool, str]:
         try:
@@ -177,7 +177,7 @@ class AuthService:
 
     def verify_session(self, session_token: str) -> tuple[bool, str]:
         try:
-            payload = jwt.decode(session_token, SUPABASE_SERVICE_ROLE_KEY, algorithms=['HS256'])
+            payload = jwt.decode(session_token, SUPABASE_KEY, algorithms=['HS256'])
             self.logger.log_auth_event('session_verify', payload['user_id'], success=True)
             return True, payload['user_id']
         except jwt.ExpiredSignatureError:

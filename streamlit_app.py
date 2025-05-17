@@ -64,15 +64,15 @@ if not st.session_state.logged_in:
                     st.error(msg)
     else:
         if st.button("Login"):
-                success, user_data, msg = auth_service.login_user(email, password)
-                if success:
-                    st.session_state.user_id = user_data["id"]
-                    st.session_state.logged_in = True
-                    st.session_state.login_attempts = 0
+            success, user_data, msg = auth_service.login_user(email, password)
+            if success:
+                st.session_state.user_id = user_data["id"]
+                st.session_state.logged_in = True
+                st.session_state.login_attempts = 0
                 st.experimental_rerun()
-                else:
-                    st.session_state.login_attempts += 1
-                    st.error(msg)
+            else:
+                st.session_state.login_attempts += 1
+                st.error(msg)
     st.stop()
 
 # Handle password reset via token in URL
@@ -103,7 +103,7 @@ if st.button("Save Personalization"):
     st.session_state.phase = phase
     st.session_state.support_goal = goal
     st.session_state.dietary_preferences = diet
-            st.session_state.personalization_completed = True
+    st.session_state.personalization_completed = True
     st.success("Personalization saved!")
 
 if not st.session_state.get("personalization_completed"):
@@ -114,18 +114,18 @@ if not st.session_state.get("personalization_completed"):
 st.header("Ask a question")
 user_question = st.text_input("Your question")
 if st.button("Ask") and user_question:
-            try:
-                qa_chain = load_llm_chain()
-                response = qa_chain.run({
-                    "phase": st.session_state.phase,
-                    "goal": st.session_state.support_goal,
-                    "diet": ", ".join(st.session_state.dietary_preferences),
-                    "question": user_question
-                })
-                add_to_chat_history("user", user_question)
-                add_to_chat_history("assistant", response)
+    try:
+        qa_chain = load_llm_chain()
+        response = qa_chain.run({
+            "phase": st.session_state.phase,
+            "goal": st.session_state.support_goal,
+            "diet": ", ".join(st.session_state.dietary_preferences),
+            "question": user_question
+        })
+        add_to_chat_history("user", user_question)
+        add_to_chat_history("assistant", response)
         st.success("Answer generated!")
-            except Exception as e:
+    except Exception as e:
         st.error(f"Error: {str(e)}")
 
 # Show chat history

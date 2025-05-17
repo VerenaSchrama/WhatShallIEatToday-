@@ -111,7 +111,7 @@ class EmailService:
         except jwt.ExpiredSignatureError:
             return False, "", "Token has expired"
         except jwt.InvalidTokenError:
-            return False, "", "Invalid token"
+            return False, "", "Invalid token" 
 
     def send_reset_email(self, to_email, reset_link):
         subject = "Password Reset Request"

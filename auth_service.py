@@ -259,8 +259,8 @@ class AuthService:
         return True, "Password reset successful." 
     
     def save_reset_token(self, email, token, expiry):
-    self.supabase.table("password_resets").insert({
-        "email": email,
-        "token": token,
-        "expiry": expiry.isoformat()
-    }).execute()
+        self.supabase.table("password_resets").insert({
+            "email": email,
+            "token": token,
+            "expiry": expiry,
+        }).execute()

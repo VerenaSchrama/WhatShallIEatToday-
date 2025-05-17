@@ -16,6 +16,8 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SESSION_TIMEOUT = 3600  # 1 hour in seconds
 MAX_LOGIN_ATTEMPTS = 3
 PASSWORD_MIN_LENGTH = 8
+VERIFICATION_TOKEN_EXPIRY = 24 * 3600  # 24 hours in seconds
+RESET_TOKEN_EXPIRY = 1 * 3600  # 1 hour in seconds
 
 # UI Constants
 SUPPORT_OPTIONS = [

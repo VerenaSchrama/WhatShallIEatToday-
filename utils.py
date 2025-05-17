@@ -2,11 +2,8 @@
 import openai
 import streamlit as st
 
-# 👇 Debug print om te controleren of de sleutel geladen wordt
-print("🔐 OpenAI key found:", st.secrets.get("OPENAI_API_KEY", "❌ NOT FOUND"))
-
 openai.api_key = st.secrets["OPENAI_API_KEY"]
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 

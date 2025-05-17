@@ -4,6 +4,10 @@ from email.mime.multipart import MIMEMultipart
 import os
 from datetime import datetime, timedelta
 import jwt
+from dotenv import load_dotenv
+load_dotenv(override=True)
+
+
 from config import (
     SUPABASE_SERVICE_KEY,
     ERROR_MESSAGES,
@@ -12,8 +16,8 @@ from config import (
 
 class EmailService:
     def __init__(self):
-        self.smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        self.smtp_server = os.getenv("SMTP_SERVER", "smtp.transip.email")
+        self.smtp_port = int(os.getenv("SMTP_PORT", 465))
         self.smtp_username = os.getenv("SMTP_USERNAME")
         self.smtp_password = os.getenv("SMTP_PASSWORD")
         self.sender_email = os.getenv("SENDER_EMAIL")
@@ -107,4 +111,9 @@ class EmailService:
         except jwt.ExpiredSignatureError:
             return False, "", "Token has expired"
         except jwt.InvalidTokenError:
-            return False, "", "Invalid token" 
+            return False, "", "Invalid token"
+
+    def send_reset_email(self, to_email, reset_link):
+        subject = "Password Reset Request"
+        body = f"Click the following link to reset your password: {reset_link}\n\nIf you did not request this, ignore this email."
+        return self.send_email(to_email, subject, body) 

@@ -16,6 +16,7 @@ from config import (
 )
 from email_service import EmailService
 from logging_service import LoggingService
+import secrets
 
 class AuthService:
     def __init__(self):
@@ -226,4 +227,33 @@ class AuthService:
 
         except Exception as e:
             self.logger.log_auth_event('password_change', success=False, details={'error': str(e)})
-            return False, f"Password change error: {str(e)}" 
+            return False, f"Password change error: {str(e)}"
+
+    def send_password_reset(self, email):
+        token = secrets.token_urlsafe(32)
+        expiry = datetime.utcnow() + timedelta(hours=1)
+        # TODO: Save token, email, and expiry to DB
+        self.save_reset_token(email, token, expiry)
+        reset_link = f"http://localhost:8501/?token={token}"
+        success = self.email_service.send_reset_email(email, reset_link)
+        if success:
+            return True, "Reset link sent."
+        else:
+            return False, "Failed to send reset email."
+
+    def verify_reset_token(self, token):
+        # TODO: Retrieve token record from DB
+        record = self.get_reset_token_record(token)
+        if record and record['expiry'] > datetime.utcnow():
+            return True, record['email']
+        return False, None
+
+    def reset_password(self, token, new_password):
+        valid, email = self.verify_reset_token(token)
+        if not valid:
+            return False, "Invalid or expired token."
+        # TODO: Update user's password in DB
+        self.update_user_password(email, new_password)
+        # TODO: Delete token after use
+        self.delete_reset_token(token)
+        return True, "Password reset successful." 

@@ -20,6 +20,8 @@ import secrets
 
 class AuthService:
     def __init__(self):
+        print(f"Initializing AuthService with URL: {SUPABASE_URL}")
+        print(f"Service key exists: {bool(SUPABASE_SERVICE_ROLE_KEY)}")
         self.supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
         self.email_service = EmailService()
         self.logger = LoggingService()

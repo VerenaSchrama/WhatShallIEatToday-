@@ -257,3 +257,10 @@ class AuthService:
         # TODO: Delete token after use
         self.delete_reset_token(token)
         return True, "Password reset successful." 
+    
+    def save_reset_token(self, email, token, expiry):
+    self.supabase.table("password_resets").insert({
+        "email": email,
+        "token": token,
+        "expiry": expiry.isoformat()
+    }).execute()

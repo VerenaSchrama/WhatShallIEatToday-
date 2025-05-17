@@ -230,16 +230,24 @@ class AuthService:
             return False, f"Password change error: {str(e)}"
 
     def send_password_reset(self, email):
-        token = secrets.token_urlsafe(32)
-        expiry = datetime.utcnow() + timedelta(hours=1)
-        # TODO: Save token, email, and expiry to DB
-        self.save_reset_token(email, token, expiry)
-        reset_link = f"http://localhost:8501/?token={token}"
-        success = self.email_service.send_reset_email(email, reset_link)
-        if success:
-            return True, "Reset link sent."
-        else:
-            return False, "Failed to send reset email."
+        try:
+            token = secrets.token_urlsafe(32)
+            expiry = datetime.utcnow() + timedelta(hours=1)
+            
+            # Save token to database
+            if not self.save_reset_token(email, token, expiry):
+                return False, "Failed to save reset token"
+            
+            reset_link = f"http://localhost:8501/?token={token}"
+            success = self.email_service.send_reset_email(email, reset_link)
+            
+            if success:
+                return True, "Reset link sent."
+            else:
+                return False, "Failed to send reset email."
+        except Exception as e:
+            self.logger.log_auth_event('send_password_reset', success=False, details={'error': str(e)})
+            return False, f"Error: {str(e)}"
 
     def verify_reset_token(self, token):
         # TODO: Retrieve token record from DB
@@ -259,8 +267,14 @@ class AuthService:
         return True, "Password reset successful." 
     
     def save_reset_token(self, email, token, expiry):
-        self.supabase.table("password_resets").insert({
-            "email": email,
-            "token": token,
-            "expiry": expiry.isoformat(),
-        }).execute()
+        try:
+            self.supabase.table("password_resets").insert({
+                "email": email,
+                "token": token,
+                "expiry": expiry.isoformat(),
+                "used": False
+            }).execute()
+            return True
+        except Exception as e:
+            self.logger.log_auth_event('save_reset_token', success=False, details={'error': str(e)})
+            return False

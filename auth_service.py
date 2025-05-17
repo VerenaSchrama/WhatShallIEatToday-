@@ -22,12 +22,20 @@ class AuthService:
     def __init__(self):
         print("=== AuthService Initialization ===")
         print(f"SUPABASE_URL: {SUPABASE_URL}")
+        print(f"SUPABASE_KEY exists: {bool(SUPABASE_KEY)}")
         print(f"SUPABASE_KEY length: {len(SUPABASE_KEY) if SUPABASE_KEY else 0}")
+        print(f"SUPABASE_KEY first 10 chars: {SUPABASE_KEY[:10] if SUPABASE_KEY else 'None'}")
         try:
+            print("Attempting to create Supabase client...")
             self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
             print("Supabase client created successfully")
+            # Test the connection
+            print("Testing Supabase connection...")
+            test_response = self.supabase.table("users").select("count").limit(1).execute()
+            print(f"Connection test successful: {test_response}")
         except Exception as e:
             print(f"Error creating Supabase client: {str(e)}")
+            print(f"Error type: {type(e)}")
             raise
         self.email_service = EmailService()
         self.logger = LoggingService()

@@ -16,8 +16,8 @@ print(f"SUPABASE_ANON_KEY length: {len(SUPABASE_ANON_KEY) if SUPABASE_ANON_KEY e
 print(f"SUPABASE_SERVICE_ROLE_KEY length: {len(SUPABASE_SERVICE_ROLE_KEY) if SUPABASE_SERVICE_ROLE_KEY else 0}")
 print("==================================")
 
-# Use anon key for client operations
-SUPABASE_KEY = SUPABASE_ANON_KEY
+# Use service role key for admin operations
+SUPABASE_KEY = SUPABASE_SERVICE_ROLE_KEY
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

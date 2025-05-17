@@ -277,13 +277,19 @@ class AuthService:
     
     def save_reset_token(self, email, token, expiry):
         try:
-            self.supabase.table("password_resets").insert({
+            print(f"Attempting to save reset token for email: {email}")
+            print(f"Using Supabase URL: {SUPABASE_URL}")
+            print(f"Using Supabase key length: {len(SUPABASE_KEY) if SUPABASE_KEY else 0}")
+            
+            response = self.supabase.table("password_resets").insert({
                 "email": email,
                 "token": token,
-                "expiry": expiry.isoformat(),
-                "used": False
+                "expiry": expiry.isoformat()
             }).execute()
+            
+            print(f"Reset token saved successfully: {response}")
             return True
         except Exception as e:
+            print(f"Error saving reset token: {str(e)}")
             self.logger.log_auth_event('save_reset_token', success=False, details={'error': str(e)})
-            return False
+            raise

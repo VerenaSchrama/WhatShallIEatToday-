@@ -62,4 +62,11 @@ SUCCESS_MESSAGES = {
     "login": "Login successful!",
     "settings_saved": "Your preferences have been saved successfully",
     "password_reset": "Password reset instructions have been sent to your email"
-} 
+}
+
+def save_reset_token(self, email, token, expiry):
+    self.supabase.table("password_resets").insert({
+        "email": email,
+        "token": token,
+        "expiry": expiry.isoformat()
+    }).execute() 

@@ -55,7 +55,7 @@ if not st.session_state.logged_in:
                 st.error(msg)
         if st.button("Back to login/register"):
             st.session_state.show_reset = False
-            st.experimental_rerun()
+            st.rerun()
         st.stop()
 
     if auth_mode == "Register":
@@ -76,7 +76,7 @@ if not st.session_state.logged_in:
                 st.session_state.user_id = user_data["id"]
                 st.session_state.logged_in = True
                 st.session_state.login_attempts = 0
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.session_state.login_attempts += 1
                 st.error(msg)

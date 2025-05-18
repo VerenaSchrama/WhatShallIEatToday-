@@ -53,6 +53,9 @@ if not st.session_state.logged_in:
                 st.success("Check your email for a reset link.")
             else:
                 st.error(msg)
+        if st.button("Back to login/register"):
+            st.session_state.show_reset = False
+            st.experimental_rerun()
         st.stop()
 
     if auth_mode == "Register":

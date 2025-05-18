@@ -271,7 +271,7 @@ class AuthService:
                 return False, "Failed to save reset token"
             
             reset_link = f"http://localhost:8501/?token={token}"
-            success = self.email_service.send_reset_email(email, reset_link)
+            success = self.email_service.send_password_reset_email(email, reset_link)
             
             if success:
                 return True, "Reset link sent."

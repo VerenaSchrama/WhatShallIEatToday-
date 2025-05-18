@@ -113,7 +113,7 @@ class EmailService:
         except jwt.InvalidTokenError:
             return False, "", "Invalid token" 
 
-    def send_reset_email(self, to_email, reset_link):
+    def send_password_reset_email(self, to_email, reset_link):
         subject = "Password Reset Request"
         body = f"Click the following link to reset your password: {reset_link}\n\nIf you did not request this, ignore this email."
-        return self.send_email(to_email, subject, body) 
+        return self._send_email(to_email, subject, body) 

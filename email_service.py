@@ -51,13 +51,20 @@ class EmailService:
             msg['To'] = to_email
             msg.attach(MIMEText(html_content, 'html'))
 
-            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
-                server.starttls()
-                server.login(self.smtp_username, self.smtp_password)
-                server.send_message(msg)
+            if self.smtp_port == 465:
+                with smtplib.SMTP_SSL(self.smtp_server, self.smtp_port) as server:
+                    server.login(self.smtp_username, self.smtp_password)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                    server.starttls()
+                    server.login(self.smtp_username, self.smtp_password)
+                    server.send_message(msg)
             return True
         except Exception as e:
             print(f"Error sending email: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def send_verification_email(self, user_id: str, email: str) -> bool:

@@ -202,30 +202,17 @@ if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
 
-# Chat area with bubbles (only render if there are messages)
-if st.session_state.chat_history:
-    st.markdown('<div class="chat-area">', unsafe_allow_html=True)
-    for role, msg in st.session_state.chat_history:
-        if role == "user":
-            st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-else:
-    # Show a minimal placeholder or nothing
-    st.markdown('<div style="height: 30px;"></div>', unsafe_allow_html=True)
-
-# Add custom CSS for chat bubbles and fixed input bar
+# Add custom CSS for chat bubbles and fixed input bar (transparent chat area)
 st.markdown("""
     <style>
     .chat-area {
         height: 400px;
         overflow-y: auto;
-        padding: 1rem;
-        background: #f7f7fa;
-        border-radius: 16px;
+        padding: 1rem 0;
+        background: transparent;
+        border-radius: 0;
         margin-bottom: 80px;
-        border: 1px solid #eee;
+        border: none;
     }
     .bubble {
         display: inline-block;
@@ -264,6 +251,17 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# Chat area with bubbles (only render if there are messages)
+if st.session_state.chat_history:
+    st.markdown('<div class="chat-area">', unsafe_allow_html=True)
+    for role, msg in st.session_state.chat_history:
+        if role == "user":
+            st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+# No placeholder div at all if empty
 
 # Fixed input bar at the bottom
 with st.container():

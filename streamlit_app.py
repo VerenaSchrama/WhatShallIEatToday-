@@ -202,75 +202,15 @@ if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
 
-# Add custom CSS for chat bubbles and fixed input bar (transparent chat area)
-st.markdown("""
-    <style>
-    .chat-area {
-        height: 400px;
-        overflow-y: auto;
-        padding: 1rem 0;
-        background: transparent;
-        border-radius: 0;
-        margin-bottom: 80px;
-        border: none;
-    }
-    .bubble {
-        display: inline-block;
-        padding: 0.75rem 1.25rem;
-        border-radius: 18px;
-        margin-bottom: 0.5rem;
-        max-width: 70%;
-        word-break: break-word;
-        font-size: 1.1rem;
-    }
-    .bubble-user {
-        background: #442369;
-        color: #fff;
-        margin-left: 30%;
-        text-align: right;
-        float: right;
-        clear: both;
-    }
-    .bubble-assistant {
-        background: #e6e0f3;
-        color: #222;
-        margin-right: 30%;
-        text-align: left;
-        float: left;
-        clear: both;
-    }
-    .fixed-input {
-        position: fixed;
-        bottom: 2rem;
-        left: 0;
-        width: 100vw;
-        background: #fff;
-        padding: 1rem 2rem 1rem 2rem;
-        z-index: 100;
-        border-top: 1px solid #eee;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Chat area with bubbles (only render if there are messages)
+# Chat area: simple, vertical, no bubbles, no custom CSS
 if st.session_state.chat_history:
-    st.markdown('<div class="chat-area">', unsafe_allow_html=True)
+    st.header("Chat History")
     for role, msg in st.session_state.chat_history:
-        if role == "user":
-            st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-# No placeholder div at all if empty
+        st.markdown(f"**{role.capitalize()}:** {msg}")
 
-# Fixed input bar at the bottom
-with st.container():
-    st.markdown('<div class="fixed-input">', unsafe_allow_html=True)
-    user_question = st.text_input("Your question", key="chat_input", label_visibility="collapsed")
-    ask = st.button("Ask", key="ask_button")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-if ask and user_question:
+# Input at the bottom, always visible after latest message
+user_question = st.text_input("Your question", key="chat_input")
+if st.button("Ask", key="ask_button") and user_question:
     try:
         qa_chain = load_llm_chain()
         response = qa_chain.run({
@@ -281,6 +221,7 @@ if ask and user_question:
         })
         add_to_chat_history("user", user_question)
         add_to_chat_history("assistant", response)
+        st.session_state["chat_input"] = ""
     except Exception as e:
         st.error(f"Error: {str(e)}")
 

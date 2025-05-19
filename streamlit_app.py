@@ -194,16 +194,74 @@ if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
 
-# Show chat history
-st.header("Chat History")
-# Display chat history in chronological order (oldest at top)
+# Add custom CSS for modern card UI with purple accent
+st.markdown(
+    """
+    <style>
+    body, .stApp {
+        background-color: #FAFAFB !important;
+        font-family: 'Inter', 'sans-serif';
+    }
+    .chat-container {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 12px rgba(68, 35, 105, 0.08);
+        padding: 2rem;
+        margin-bottom: 100px;
+        border: 1px solid #e3d6f3;
+    }
+    .fixed-input {
+        position: fixed;
+        bottom: 2rem;
+        left: 0;
+        width: 100vw;
+        background: #FAFAFB;
+        padding: 1rem 2rem 1rem 2rem;
+        z-index: 100;
+        border-top: 1px solid #e3d6f3;
+    }
+    .stButton>button {
+        background: #442369;
+        color: #fff;
+        border-radius: 24px;
+        border: none;
+        padding: 0.5rem 2rem;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        transition: background 0.2s;
+    }
+    .stButton>button:hover {
+        background: #341a4d;
+    }
+    .stTextInput>div>div>input {
+        border-radius: 24px;
+        border: 1.5px solid #e3d6f3;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        background: #fff;
+    }
+    .stMarkdown {
+        font-size: 1.1rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Show chat history in a scrollable container
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 for role, msg in st.session_state.chat_history:
     st.markdown(f"**{role.capitalize()}:** {msg}")
+st.markdown('</div>', unsafe_allow_html=True)
 
-# Chat input at the bottom
-st.header("Ask a question")
-user_question = st.text_input("Your question", key="chat_input")
-if st.button("Ask", key="ask_button") and user_question:
+# Fixed input bar at the bottom
+with st.container():
+    st.markdown('<div class="fixed-input">', unsafe_allow_html=True)
+    user_question = st.text_input("Your question", key="chat_input", label_visibility="collapsed")
+    ask = st.button("Ask", key="ask_button")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+if ask and user_question:
     try:
         qa_chain = load_llm_chain()
         response = qa_chain.run({

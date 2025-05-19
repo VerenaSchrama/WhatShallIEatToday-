@@ -38,6 +38,14 @@ if "last_activity" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
+# Initialize session state variables for personalization and chat
+if "phase" not in st.session_state:
+    st.session_state.phase = None
+if "support_goal" not in st.session_state:
+    st.session_state.support_goal = ""
+if "dietary_preferences" not in st.session_state:
+    st.session_state.dietary_preferences = []
+
 # Title
 st.title("Cycle Nutrition Assistant")
 
@@ -209,6 +217,8 @@ st.markdown(
         padding: 2rem;
         margin-bottom: 100px;
         border: 1px solid #e3d6f3;
+        height: 400px;
+        overflow-y: auto;
     }
     .fixed-input {
         position: fixed;

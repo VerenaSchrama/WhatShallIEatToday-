@@ -12,7 +12,10 @@ from config import (
     SUCCESS_MESSAGES, 
     SESSION_TIMEOUT,
     SUPABASE_URL,
-    SUPABASE_KEY
+    SUPABASE_KEY,
+    SUPPORT_OPTIONS,
+    DIETARY_OPTIONS,
+    CYCLE_PHASES
 )
 
 # Initialize Supabase client
@@ -24,6 +27,8 @@ profile_service = ProfileService()
 # Session state
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+if "guest_mode" not in st.session_state:
+    st.session_state.guest_mode = False
 if "personalization_completed" not in st.session_state:
     st.session_state.personalization_completed = False
 if "login_attempts" not in st.session_state:
@@ -33,53 +38,69 @@ if "last_activity" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Login/Register
-if not st.session_state.logged_in:
-    st.title("Cycle Nutrition Assistant (Simple)")
-    auth_mode = st.radio("Login or Register", ["Login", "Register"])
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
+# Title
+st.title("Cycle Nutrition Assistant")
 
-    # Add 'Forgot password?' button
-    if st.button("Forgot password?"):
-        st.session_state.show_reset = True
+# Login/Register or Guest Access
+if not st.session_state.logged_in and not st.session_state.guest_mode:
+    st.write("Welcome! Choose how you'd like to proceed:")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("Login or Register")
+        auth_mode = st.radio("Select option", ["Login", "Register"])
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
 
-    # Show password reset form
-    if st.session_state.get("show_reset"):
-        reset_email = st.text_input("Enter your email to reset password")
-        if st.button("Send reset link"):
-            success, msg = auth_service.send_password_reset(reset_email)
-            if success:
-                st.success("Check your email for a reset link.")
-            else:
-                st.error(msg)
-        if st.button("Back to login/register"):
-            st.session_state.show_reset = False
-            st.rerun()
-        st.stop()
+        # Add 'Forgot password?' button
+        if st.button("Forgot password?"):
+            st.session_state.show_reset = True
 
-    if auth_mode == "Register":
-        confirm_password = st.text_input("Confirm Password", type="password")
-        if st.button("Register"):
-            if password != confirm_password:
-                st.error("Passwords do not match")
-            else:
-                success, msg = auth_service.register_user(email, password)
+        # Show password reset form
+        if st.session_state.get("show_reset"):
+            reset_email = st.text_input("Enter your email to reset password")
+            if st.button("Send reset link"):
+                success, msg = auth_service.send_password_reset(reset_email)
                 if success:
-                    st.success(msg)
+                    st.success("Check your email for a reset link.")
                 else:
                     st.error(msg)
-    else:
-        if st.button("Login"):
-            success, user_data, msg = auth_service.login_user(email, password)
-            if success:
-                st.session_state.user_id = user_data["id"]
-                st.session_state.logged_in = True
-                st.session_state.login_attempts = 0
+            if st.button("Back to login/register"):
+                st.session_state.show_reset = False
                 st.rerun()
-            else:
-                st.session_state.login_attempts += 1
-                st.error(msg)
+            st.stop()
+
+        if auth_mode == "Register":
+            confirm_password = st.text_input("Confirm Password", type="password")
+            if st.button("Register"):
+                if password != confirm_password:
+                    st.error("Passwords do not match")
+                else:
+                    success, msg = auth_service.register_user(email, password)
+                    if success:
+                        st.success(msg)
+                    else:
+                        st.error(msg)
+        else:
+            if st.button("Login"):
+                success, user_data, msg = auth_service.login_user(email, password)
+                if success:
+                    st.session_state.user_id = user_data["id"]
+                    st.session_state.logged_in = True
+                    st.session_state.login_attempts = 0
+                    st.rerun()
+                else:
+                    st.session_state.login_attempts += 1
+                    st.error(msg)
+    
+    with col2:
+        st.subheader("Try as Guest")
+        st.write("Experience the chatbot without creating an account")
+        if st.button("Continue as Guest"):
+            st.session_state.guest_mode = True
+            st.rerun()
+    
     st.stop()
 
 # Handle password reset via token in URL
@@ -102,9 +123,9 @@ if "token" in query_params:
 
 # Personalization
 st.header("Personalization")
-phase = st.selectbox("Cycle phase", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"])
-goal = st.selectbox("Support goal", ["Nothing specific", "Hormonal balance and regular cycle", "Getting back my period", "More energy", "Acne", "Eat more nutritious in general", "Digestive health/ Metabolism boost"])
-diet = st.multiselect("Dietary preferences", ["Vegan", "Vegetarian", "Nut allergy", "Gluten free", "Lactose intolerance"])
+phase = st.selectbox("Cycle phase", [""] + CYCLE_PHASES)
+goal = st.selectbox("Support goal", [""] + SUPPORT_OPTIONS)
+diet = st.multiselect("Dietary preferences", DIETARY_OPTIONS)
 
 if st.button("Save Personalization"):
     st.session_state.phase = phase
@@ -139,3 +160,19 @@ if st.button("Ask") and user_question:
 st.header("Chat History")
 for role, msg in st.session_state.chat_history[-10:]:
     st.markdown(f"**{role.capitalize()}:** {msg}")
+
+# Logout button for logged-in users
+if st.session_state.logged_in:
+    if st.button("Logout"):
+        st.session_state.logged_in = False
+        st.session_state.personalization_completed = False
+        st.session_state.chat_history = []
+        st.rerun()
+
+# Exit guest mode button
+if st.session_state.guest_mode:
+    if st.button("Exit Guest Mode"):
+        st.session_state.guest_mode = False
+        st.session_state.personalization_completed = False
+        st.session_state.chat_history = []
+        st.rerun()

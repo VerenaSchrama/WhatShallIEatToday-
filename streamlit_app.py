@@ -254,11 +254,19 @@ st.markdown("""
 
 # Chat area with bubbles
 st.markdown('<div class="chat-area">', unsafe_allow_html=True)
-for role, msg in st.session_state.chat_history:
-    if role == "user":
-        st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
+if st.session_state.chat_history:
+    for role, msg in st.session_state.chat_history:
+        if role == "user":
+            st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
+else:
+    st.markdown(
+        '<div style="color:#888; text-align:center; margin-top:120px; font-size:1.2rem;">'
+        'Start the conversation! 👋'
+        '</div>',
+        unsafe_allow_html=True
+    )
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Fixed input bar at the bottom

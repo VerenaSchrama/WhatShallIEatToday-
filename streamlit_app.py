@@ -132,6 +132,10 @@ if "token" in query_params:
 # Personalization
 st.header("Personalization")
 
+# Support goal and dietary preferences FIRST
+st.session_state.support_goal = st.selectbox("Support goal", [""] + SUPPORT_OPTIONS)
+st.session_state.dietary_preferences = st.multiselect("Dietary preferences", DIETARY_OPTIONS)
+
 # Manual override first
 st.markdown("#### Option 1: Choose your current cycle phase manually ⬇️")
 phase_override = st.selectbox("", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
@@ -191,16 +195,25 @@ if phase_override and phase_override in ["Menstrual", "Follicular", "Ovulatory",
     st.success(f"You selected: **{phase_override}** phase manually.")
     st.session_state.personalization_completed = True
 
-# Support goal and dietary preferences
-st.session_state.support_goal = st.selectbox("Support goal", [""] + SUPPORT_OPTIONS)
-st.session_state.dietary_preferences = st.multiselect("Dietary preferences", DIETARY_OPTIONS)
-
 if st.session_state.phase and st.session_state.support_goal and st.session_state.dietary_preferences:
     st.session_state.personalization_completed = True
 
 if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
+
+# Chat area with bubbles (only render if there are messages)
+if st.session_state.chat_history:
+    st.markdown('<div class="chat-area">', unsafe_allow_html=True)
+    for role, msg in st.session_state.chat_history:
+        if role == "user":
+            st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+else:
+    # Show a minimal placeholder or nothing
+    st.markdown('<div style="height: 30px;"></div>', unsafe_allow_html=True)
 
 # Add custom CSS for chat bubbles and fixed input bar
 st.markdown("""
@@ -251,23 +264,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
-# Chat area with bubbles
-st.markdown('<div class="chat-area">', unsafe_allow_html=True)
-if st.session_state.chat_history:
-    for role, msg in st.session_state.chat_history:
-        if role == "user":
-            st.markdown(f'<div class="bubble bubble-user">{msg}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="bubble bubble-assistant">{msg}</div>', unsafe_allow_html=True)
-else:
-    st.markdown(
-        '<div style="color:#888; text-align:center; margin-top:120px; font-size:1.2rem;">'
-        'Start the conversation! 👋'
-        '</div>',
-        unsafe_allow_html=True
-    )
-st.markdown('</div>', unsafe_allow_html=True)
 
 # Fixed input bar at the bottom
 with st.container():

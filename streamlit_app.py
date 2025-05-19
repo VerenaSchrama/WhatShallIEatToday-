@@ -104,7 +104,7 @@ if not st.session_state.logged_in and not st.session_state.guest_mode:
     st.stop()
 
 # Handle password reset via token in URL
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 if "token" in query_params:
     token = query_params["token"][0]
     st.header("Reset Your Password")
@@ -138,10 +138,16 @@ if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
 
-# Chat
+# Show chat history
+st.header("Chat History")
+# Display chat history in chronological order (oldest at top)
+for role, msg in st.session_state.chat_history:
+    st.markdown(f"**{role.capitalize()}:** {msg}")
+
+# Chat input at the bottom
 st.header("Ask a question")
-user_question = st.text_input("Your question")
-if st.button("Ask") and user_question:
+user_question = st.text_input("Your question", key="chat_input")
+if st.button("Ask", key="ask_button") and user_question:
     try:
         qa_chain = load_llm_chain()
         response = qa_chain.run({
@@ -155,11 +161,6 @@ if st.button("Ask") and user_question:
         st.success("Answer generated!")
     except Exception as e:
         st.error(f"Error: {str(e)}")
-
-# Show chat history
-st.header("Chat History")
-for role, msg in st.session_state.chat_history[-10:]:
-    st.markdown(f"**{role.capitalize()}:** {msg}")
 
 # Logout button for logged-in users
 if st.session_state.logged_in:

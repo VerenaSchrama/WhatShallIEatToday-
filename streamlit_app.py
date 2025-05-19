@@ -214,7 +214,6 @@ if st.button("Ask", key="ask_button") and user_question:
         })
         add_to_chat_history("user", user_question)
         add_to_chat_history("assistant", response)
-        st.success("Answer generated!")
     except Exception as e:
         st.error(f"Error: {str(e)}")
 

@@ -76,6 +76,7 @@ def render_data_management(profile_service: ProfileService, user_id: str):
                 json_str = json.dumps(data, indent=2)
                 st.download_button(
                     label="Download Data",
+                    label_visibility="visible",
                     data=json_str,
                     file_name=f"cycle_nutrition_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                     mime="application/json"

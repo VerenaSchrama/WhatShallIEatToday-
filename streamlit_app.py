@@ -209,6 +209,10 @@ if st.session_state.chat_history:
         st.markdown(f"**{role.capitalize()}:** {msg}")
 
 # Input at the bottom, always visible after latest message
+if st.session_state.get("clear_chat_input"):
+    st.session_state["chat_input"] = ""
+    st.session_state["clear_chat_input"] = False
+
 user_question = st.text_input("Your question", key="chat_input")
 if st.button("Ask", key="ask_button") and user_question:
     try:
@@ -221,7 +225,8 @@ if st.button("Ask", key="ask_button") and user_question:
         })
         add_to_chat_history("user", user_question)
         add_to_chat_history("assistant", response)
-        st.session_state["chat_input"] = ""
+        st.session_state["clear_chat_input"] = True
+        st.experimental_rerun()
     except Exception as e:
         st.error(f"Error: {str(e)}")
 

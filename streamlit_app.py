@@ -138,7 +138,12 @@ st.session_state.dietary_preferences = st.multiselect("Dietary preferences", DIE
 
 # Manual override first
 st.markdown("#### Option 1: Choose your current cycle phase manually ⬇️")
-phase_override = st.selectbox("", ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"], index=0)
+phase_override = st.selectbox(
+    "Select your current cycle phase (optional)",
+    ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"],
+    index=0,
+    label_visibility="collapsed"
+)
 
 # Add divider/intro for auto detection
 st.markdown("---")
@@ -226,7 +231,7 @@ if st.button("Ask", key="ask_button") and user_question:
         add_to_chat_history("user", user_question)
         add_to_chat_history("assistant", response)
         st.session_state["clear_chat_input"] = True
-        st.experimental_rerun()
+        st.rerun()
     except Exception as e:
         st.error(f"Error: {str(e)}")
 

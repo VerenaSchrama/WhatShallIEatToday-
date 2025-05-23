@@ -17,6 +17,7 @@ from config import (
     DIETARY_OPTIONS,
     CYCLE_PHASES
 )
+import streamlit.components.v1 as components
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -218,22 +219,59 @@ if st.session_state.get("clear_chat_input"):
     st.session_state["chat_input"] = ""
     st.session_state["clear_chat_input"] = False
 
-user_question = st.text_input("Your question", key="chat_input")
-if st.button("Ask", key="ask_button") and user_question:
-    try:
-        qa_chain = load_llm_chain()
-        response = qa_chain.run({
-            "phase": st.session_state.phase,
-            "goal": st.session_state.support_goal,
-            "diet": ", ".join(st.session_state.dietary_preferences),
-            "question": user_question
-        })
-        add_to_chat_history("user", user_question)
-        add_to_chat_history("assistant", response)
-        st.session_state["clear_chat_input"] = True
-        st.rerun()
-    except Exception as e:
-        st.error(f"Error: {str(e)}")
+# --- Sticky Question Bar Implementation ---
+
+# Custom CSS for sticky bar
+st.markdown(
+    '''
+    <style>
+    .sticky-question-bar {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        background: #fff7f0;
+        border-top: 1px solid #e0e0e0;
+        padding: 1rem 2rem 1rem 2rem;
+        z-index: 1000;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
+    }
+    .sticky-question-bar form {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 0;
+    }
+    .sticky-question-bar input[type="text"] {
+        flex: 1;
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+    }
+    .sticky-question-bar button {
+        background: #e07a5f;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1.2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .block-container { padding-bottom: 90px !important; }
+    </style>
+    ''', unsafe_allow_html=True)
+
+# Render the sticky question bar using HTML form
+components.html(f'''
+<div class="sticky-question-bar">
+  <form action="#" method="post" onsubmit="window.parent.postMessage({{streamlitMessageType: 'streamlit:setComponentValue', key: 'chat_input', value: document.getElementById('sticky_input').value}}, '*'); return false;">
+    <input id="sticky_input" type="text" placeholder="Type your question..." style="width: 70%;" />
+    <button type="submit">Ask</button>
+  </form>
+</div>
+''', height=80)
 
 # Logout button for logged-in users
 if st.session_state.logged_in:

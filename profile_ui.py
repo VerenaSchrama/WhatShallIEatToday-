@@ -25,7 +25,7 @@ def render_profile_settings(profile_service: ProfileService, user_id: str):
         current_phase = profile.get("phase", "")
         new_phase = st.selectbox(
             "Current Cycle Phase",
-            options=[""] + CYCLE_PHASES,
+            options=["Select..."] + CYCLE_PHASES,
             index=CYCLE_PHASES.index(current_phase) + 1 if current_phase in CYCLE_PHASES else 0
         )
 
@@ -33,7 +33,7 @@ def render_profile_settings(profile_service: ProfileService, user_id: str):
         current_goal = profile.get("goal", "")
         new_goal = st.selectbox(
             "Support Goal",
-            options=[""] + SUPPORT_OPTIONS,
+            options=["Select..."] + SUPPORT_OPTIONS,
             index=SUPPORT_OPTIONS.index(current_goal) + 1 if current_goal in SUPPORT_OPTIONS else 0
         )
 

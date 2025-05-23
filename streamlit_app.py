@@ -133,14 +133,14 @@ if "token" in query_params:
 st.header("Personalization")
 
 # Support goal and dietary preferences FIRST
-st.session_state.support_goal = st.selectbox("Support goal", [""] + SUPPORT_OPTIONS)
+st.session_state.support_goal = st.selectbox("Support goal", ["Select..."] + SUPPORT_OPTIONS)
 st.session_state.dietary_preferences = st.multiselect("Dietary preferences", DIETARY_OPTIONS)
 
 # Manual override first
 st.markdown("#### Option 1: Choose your current cycle phase manually ⬇️")
 phase_override = st.selectbox(
     "Select your current cycle phase (optional)",
-    ["", "Menstrual", "Follicular", "Ovulatory", "Luteal"],
+    ["Select..."] + ["Menstrual", "Follicular", "Ovulatory", "Luteal"],
     index=0,
     label_visibility="collapsed"
 )

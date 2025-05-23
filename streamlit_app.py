@@ -219,68 +219,9 @@ if st.session_state.get("clear_chat_input"):
     st.session_state["chat_input"] = ""
     st.session_state["clear_chat_input"] = False
 
-# --- Improved Sticky Question Bar Implementation ---
-# Custom CSS for sticky bar using Streamlit-native widgets
-st.markdown(
-    '''
-    <style>
-    .sticky-container {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100vw;
-        background: #232323;
-        border-top: 1px solid #444;
-        padding: 1rem 2rem 1rem 2rem;
-        z-index: 1000;
-        box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
-        display: flex;
-        justify-content: center;
-    }
-    .sticky-inner {
-        width: 100%;
-        max-width: 700px;
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-    .sticky-inner .stTextInput>div>input {
-        padding: 0.5rem;
-        border-radius: 6px;
-        border: 1px solid #444;
-        font-size: 1rem;
-        background: #181818;
-        color: #fff;
-    }
-    .sticky-inner .stButton>button {
-        background: #e07a5f;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1.2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-    }
-    .block-container { padding-bottom: 100px !important; }
-    </style>
-    ''', unsafe_allow_html=True)
-
-import streamlit as st
-from streamlit.runtime.scriptrunner import get_script_run_ctx
-
-# Place the sticky bar at the bottom using Streamlit's empty container
-sticky_placeholder = st.empty()
-with sticky_placeholder.container():
-    st.markdown('<div class="sticky-container"><div class="sticky-inner">', unsafe_allow_html=True)
-    col1, col2 = st.columns([6,1])
-    with col1:
-        user_question = st.text_input("", key="chat_input", label_visibility="collapsed", placeholder="Type your question...")
-    with col2:
-        ask_clicked = st.button("Ask", key="ask_button")
-    st.markdown('</div></div>', unsafe_allow_html=True)
-
-if ask_clicked and user_question:
+# --- Use Streamlit's st.chat_input for always-visible chat input ---
+user_question = st.chat_input("Type your question...")
+if user_question:
     try:
         qa_chain = load_llm_chain()
         response = qa_chain.run({
@@ -291,7 +232,6 @@ if ask_clicked and user_question:
         })
         add_to_chat_history("user", user_question)
         add_to_chat_history("assistant", response)
-        st.session_state["clear_chat_input"] = True
         st.rerun()
     except Exception as e:
         st.error(f"Error: {str(e)}")

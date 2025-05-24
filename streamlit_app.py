@@ -51,7 +51,7 @@ if "dietary_preferences" not in st.session_state:
 st.image("images/HerFoodCodeLOGO.png", width=120)
 
 # Title
-st.title("HerFoodCode - Your Scientific Cycle Nutrition Assistant")
+st.title("Your Scientific Cycle Nutrition Assistant")
 
 # Login/Register or Guest Access
 if not st.session_state.logged_in and not st.session_state.guest_mode:
@@ -314,7 +314,7 @@ st.sidebar.markdown("---")
 
 # --- Suggested Questions Panel in Sidebar ---
 suggested_questions = [
-    "Give me an overview of the 4 cycle phases and the food that I can try to eat for my goal and diet.",
+    "Give me an overview of the 4 cycle phases and the foods per cycle phase you recommend toeat for my goal and diet.",
     "What foods are best for my current cycle phase?",
     "Give me a 3-day breakfast plan.",
     "Why is organic food important for my cycle?",

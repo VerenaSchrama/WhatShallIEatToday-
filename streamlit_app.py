@@ -137,6 +137,9 @@ st.header("Personalization")
 st.session_state.support_goal = st.selectbox("Support goal", ["Select..."] + SUPPORT_OPTIONS)
 st.session_state.dietary_preferences = st.multiselect("Dietary preferences", DIETARY_OPTIONS)
 
+# Add divider before Option 1
+st.markdown("---")
+
 # Manual override first
 st.markdown("#### Option 1: Choose your current cycle phase manually ⬇️")
 phase_override = st.selectbox(
@@ -146,8 +149,7 @@ phase_override = st.selectbox(
     label_visibility="collapsed"
 )
 
-# Add divider/intro for auto detection
-st.markdown("---")
+# Add intro for auto detection (no divider here)
 st.markdown("#### Option 2: Or let me help you to find your current phase:")
 
 has_cycle = st.radio("Do you have a (regular) menstrual cycle?", ("Yes", "No"))

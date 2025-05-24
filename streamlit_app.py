@@ -20,6 +20,7 @@ from config import (
 import streamlit.components.v1 as components
 import json
 from fpdf import FPDF
+import time
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -385,3 +386,24 @@ if st.session_state.get("recommendations_response"):
         file_name="cycle_phase_recommendations.txt",
         mime="text/plain"
     )
+
+# --- Feedback Box at the bottom of the sidebar ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("## Feedback")
+feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
+if st.sidebar.button("Submit Feedback", key="submit_feedback"):
+    if feedback_text.strip():
+        # Prepare feedback data
+        feedback_data = {
+            "user_id": st.session_state.get("user_id", "guest"),
+            "timestamp": datetime.utcnow().isoformat(),
+            "feedback": feedback_text.strip()
+        }
+        try:
+            supabase.table("feedback").insert(feedback_data).execute()
+            st.sidebar.success("Thank you for your feedback!")
+            st.session_state["feedback_text"] = ""
+        except Exception as e:
+            st.sidebar.error(f"Error submitting feedback: {str(e)}")
+    else:
+        st.sidebar.warning("Please enter your feedback before submitting.")

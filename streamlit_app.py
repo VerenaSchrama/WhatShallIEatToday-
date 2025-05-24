@@ -393,7 +393,6 @@ st.sidebar.markdown("## Feedback")
 feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
 if st.sidebar.button("Submit Feedback", key="submit_feedback"):
     if feedback_text.strip():
-        # Prepare feedback data
         feedback_data = {
             "user_id": st.session_state.get("user_id", "guest"),
             "timestamp": datetime.utcnow().isoformat(),

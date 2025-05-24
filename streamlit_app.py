@@ -212,10 +212,6 @@ if phase_override and phase_override in ["Menstrual", "Follicular", "Ovulatory",
 if st.session_state.phase and st.session_state.support_goal and st.session_state.dietary_preferences:
     st.session_state.personalization_completed = True
 
-if not st.session_state.get("personalization_completed"):
-    st.info("Please complete personalization above.")
-    st.stop()
-
 # --- Chat area: chat bubbles with speaker labels ---
 st.markdown('''
 <style>
@@ -315,6 +311,26 @@ else:
     st.sidebar.markdown("**Dietary preferences:** _None_")
 st.sidebar.markdown("---")
 
+# --- Feedback Box at the bottom of the sidebar ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("## Feedback")
+feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
+if st.sidebar.button("Submit Feedback", key="submit_feedback"):
+    if feedback_text.strip():
+        feedback_data = {
+            "user_id": st.session_state.get("user_id", "guest"),
+            "timestamp": datetime.utcnow().isoformat(),
+            "feedback": feedback_text.strip()
+        }
+        try:
+            supabase.table("feedback").insert(feedback_data).execute()
+            st.sidebar.success("Thank you for your feedback!")
+            st.session_state["feedback_text"] = ""
+        except Exception as e:
+            st.sidebar.error(f"Error submitting feedback: {str(e)}")
+    else:
+        st.sidebar.warning("Please enter your feedback before submitting.")
+
 # --- Suggested Questions Panel in Sidebar ---
 suggested_questions = [
     "Give me a personal overview of the 4 cycle phases and an extensive list of foods you recommend.",
@@ -387,22 +403,6 @@ if st.session_state.get("recommendations_response"):
         mime="text/plain"
     )
 
-# --- Feedback Box at the bottom of the sidebar ---
-st.sidebar.markdown("---")
-st.sidebar.markdown("## Feedback")
-feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
-if st.sidebar.button("Submit Feedback", key="submit_feedback"):
-    if feedback_text.strip():
-        feedback_data = {
-            "user_id": st.session_state.get("user_id", "guest"),
-            "timestamp": datetime.utcnow().isoformat(),
-            "feedback": feedback_text.strip()
-        }
-        try:
-            supabase.table("feedback").insert(feedback_data).execute()
-            st.sidebar.success("Thank you for your feedback!")
-            st.session_state["feedback_text"] = ""
-        except Exception as e:
-            st.sidebar.error(f"Error submitting feedback: {str(e)}")
-    else:
-        st.sidebar.warning("Please enter your feedback before submitting.")
+if not st.session_state.get("personalization_completed"):
+    st.info("Please complete personalization above.")
+    st.stop()

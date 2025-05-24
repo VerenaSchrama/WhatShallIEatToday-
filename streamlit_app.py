@@ -48,7 +48,7 @@ if "dietary_preferences" not in st.session_state:
     st.session_state.dietary_preferences = []
 
 # Title
-st.title("Cycle Nutrition Assistant")
+st.title("HerFoodCode - Your Scientific Cycle Nutrition Assistant")
 
 # Login/Register or Guest Access
 if not st.session_state.logged_in and not st.session_state.guest_mode:
@@ -308,3 +308,30 @@ if st.session_state.get("dietary_preferences"):
 else:
     st.sidebar.markdown("**Dietary preferences:** _None_")
 st.sidebar.markdown("---")
+
+# --- Suggested Questions Panel in Sidebar ---
+suggested_questions = [
+    "Give me an overview of the 4 cycle phases and the food that I can try to eat for my goal and diet.",
+    "What foods are best for my current cycle phase?",
+    "Give me a 3-day breakfast plan.",
+    "Why is organic food important for my cycle?",
+    "What nutritional seeds support my phase (seed syncing)?"
+]
+
+st.sidebar.markdown("## 💡 Suggested Questions")
+for i, question in enumerate(suggested_questions):
+    if st.sidebar.button(question, key=f"suggested_q_{i}"):
+        # Add the question to chat as if the user typed it
+        add_to_chat_history("user", question)
+        try:
+            qa_chain = load_llm_chain()
+            response = qa_chain.run({
+                "phase": st.session_state.phase,
+                "goal": st.session_state.support_goal,
+                "diet": ", ".join(st.session_state.dietary_preferences),
+                "question": question
+            })
+            add_to_chat_history("assistant", response)
+            st.rerun()
+        except Exception as e:
+            st.error(f"Error: {str(e)}")

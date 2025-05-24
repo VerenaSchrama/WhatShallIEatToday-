@@ -348,12 +348,27 @@ for i, question in enumerate(suggested_questions):
 def recommendations_to_pdf(text):
     pdf = FPDF()
     pdf.add_page()
+    # Add logo (centered)
+    logo_path = "images/HerFoodCodeLOGO.png"
+    pdf.image(logo_path, x=pdf.w/2-15, y=10, w=30)
+    pdf.ln(25)
+    # Title with color #442369
+    pdf.set_text_color(68, 35, 105)
     pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "Cycle Phase Recommendations", ln=True, align='C')
+    pdf.cell(0, 10, "Your Nutritional overview per cycle phase", ln=True, align='C')
     pdf.ln(10)
+    pdf.set_text_color(0, 0, 0)
     pdf.set_font("Arial", size=12)
     for line in text.split('\n'):
-        pdf.multi_cell(0, 10, line)
+        # Make section headers (lines starting with a number and dot) colored
+        if line.strip().startswith(tuple(str(i)+'.' for i in range(1,10))):
+            pdf.set_text_color(68, 35, 105)
+            pdf.set_font("Arial", 'B', 12)
+            pdf.multi_cell(0, 10, line)
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_font("Arial", size=12)
+        else:
+            pdf.multi_cell(0, 10, line)
     return pdf.output(dest='S').encode('latin-1')
 
 if st.session_state.get("recommendations_response"):

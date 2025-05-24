@@ -210,11 +210,47 @@ if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
 
-# Chat area: simple, vertical, no bubbles, no custom CSS
+# --- Chat area: chat bubbles with speaker labels ---
+st.markdown('''
+<style>
+.chat-bubble-user {
+    background: #2d2d2d;
+    color: #fff;
+    border-radius: 16px 16px 4px 16px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    margin-left: 20%;
+    margin-right: 0;
+    text-align: right;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.chat-bubble-assistant {
+    background: #232323;
+    color: #fff;
+    border-radius: 16px 16px 16px 4px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    margin-right: 20%;
+    margin-left: 0;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.speaker-label {
+    font-weight: bold;
+    font-size: 0.95em;
+    margin-bottom: 0.2em;
+    color: #e07a5f;
+}
+</style>
+''', unsafe_allow_html=True)
+
 if st.session_state.chat_history:
     st.header("Chat History")
     for role, msg in st.session_state.chat_history:
-        st.markdown(f"**{role.capitalize()}:** {msg}")
+        if role == "user":
+            st.markdown(f'''<div class="chat-bubble-user"><div class="speaker-label">You</div>{msg}</div>''', unsafe_allow_html=True)
+        else:
+            st.markdown(f'''<div class="chat-bubble-assistant"><div class="speaker-label">Assistant</div>{msg}</div>''', unsafe_allow_html=True)
 
 # Input at the bottom, always visible after latest message
 if st.session_state.get("clear_chat_input"):

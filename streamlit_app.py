@@ -312,6 +312,9 @@ else:
 st.sidebar.markdown("---")
 
 # --- Feedback Box at the bottom of the sidebar ---
+if st.session_state.get("clear_feedback_text"):
+    st.session_state["feedback_text"] = ""
+    st.session_state["clear_feedback_text"] = False
 st.sidebar.markdown("---")
 st.sidebar.markdown("## Feedback")
 feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
@@ -325,7 +328,8 @@ if st.sidebar.button("Submit Feedback", key="submit_feedback"):
         try:
             supabase.table("feedback").insert(feedback_data).execute()
             st.sidebar.success("Thank you for your feedback!")
-            st.session_state["feedback_text"] = ""
+            st.session_state["clear_feedback_text"] = True
+            st.rerun()
         except Exception as e:
             st.sidebar.error(f"Error submitting feedback: {str(e)}")
     else:

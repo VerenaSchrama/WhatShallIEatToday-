@@ -47,6 +47,9 @@ if "support_goal" not in st.session_state:
 if "dietary_preferences" not in st.session_state:
     st.session_state.dietary_preferences = []
 
+# Logo at the top
+st.image("images/HerFoodCodeLOGO.png", width=120)
+
 # Title
 st.title("HerFoodCode - Your Scientific Cycle Nutrition Assistant")
 

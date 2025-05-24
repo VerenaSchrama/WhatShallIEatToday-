@@ -18,6 +18,7 @@ from config import (
     CYCLE_PHASES
 )
 import streamlit.components.v1 as components
+import json
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -314,7 +315,7 @@ st.sidebar.markdown("---")
 
 # --- Suggested Questions Panel in Sidebar ---
 suggested_questions = [
-    "Give me an overview of the 4 cycle phases and the foods per cycle phase you recommend toeat for my goal and diet.",
+    "Give me a personal overview of the 4 cycle phases and an extensive list of foods you recommend.",
     "What foods are best for my current cycle phase?",
     "Give me a 3-day breakfast plan.",
     "Why is organic food important for my cycle?",
@@ -335,6 +336,25 @@ for i, question in enumerate(suggested_questions):
                 "question": question
             })
             add_to_chat_history("assistant", response)
+            # If it's the first suggested question, store the response for download
+            if i == 0:
+                st.session_state["recommendations_response"] = response
             st.rerun()
         except Exception as e:
             st.error(f"Error: {str(e)}")
+
+# After rendering chat bubbles, show download if available
+if st.session_state.get("recommendations_response"):
+    st.markdown("### Download your recommendations")
+    st.download_button(
+        label="Download as Text",
+        data=st.session_state["recommendations_response"],
+        file_name="cycle_phase_recommendations.txt",
+        mime="text/plain"
+    )
+    st.download_button(
+        label="Download as JSON",
+        data=json.dumps({"recommendations": st.session_state["recommendations_response"]}, indent=2),
+        file_name="cycle_phase_recommendations.json",
+        mime="application/json"
+    )

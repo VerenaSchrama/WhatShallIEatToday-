@@ -348,6 +348,9 @@ for i, question in enumerate(suggested_questions):
 def recommendations_to_pdf(text):
     pdf = FPDF()
     pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Cycle Phase Recommendations", ln=True, align='C')
+    pdf.ln(10)
     pdf.set_font("Arial", size=12)
     for line in text.split('\n'):
         pdf.multi_cell(0, 10, line)

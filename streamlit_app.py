@@ -345,11 +345,19 @@ for i, question in enumerate(suggested_questions):
             st.error(f"Error: {str(e)}")
 
 # After rendering chat bubbles, show download if available
+def recommendations_to_pdf(text):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    for line in text.split('\n'):
+        pdf.multi_cell(0, 10, line)
+    return pdf.output(dest='S').encode('latin-1')
+
 if st.session_state.get("recommendations_response"):
     st.markdown("### Download your recommendations")
     st.download_button(
         label="Download as PDF",
-        data=(lambda text: (lambda pdf: (pdf.output(dest='S').encode('latin-1')))(FPDF()))(st.session_state["recommendations_response"]),
+        data=recommendations_to_pdf(st.session_state["recommendations_response"]),
         file_name="cycle_phase_recommendations.pdf",
         mime="application/pdf"
     )

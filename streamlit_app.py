@@ -19,6 +19,7 @@ from config import (
 )
 import streamlit.components.v1 as components
 import json
+from fpdf import FPDF
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -347,14 +348,14 @@ for i, question in enumerate(suggested_questions):
 if st.session_state.get("recommendations_response"):
     st.markdown("### Download your recommendations")
     st.download_button(
+        label="Download as PDF",
+        data=(lambda text: (lambda pdf: (pdf.output(dest='S').encode('latin-1')))(FPDF()))(st.session_state["recommendations_response"]),
+        file_name="cycle_phase_recommendations.pdf",
+        mime="application/pdf"
+    )
+    st.download_button(
         label="Download as Text",
         data=st.session_state["recommendations_response"],
         file_name="cycle_phase_recommendations.txt",
         mime="text/plain"
-    )
-    st.download_button(
-        label="Download as JSON",
-        data=json.dumps({"recommendations": st.session_state["recommendations_response"]}, indent=2),
-        file_name="cycle_phase_recommendations.json",
-        mime="application/json"
     )

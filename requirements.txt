@@ -22,3 +22,4 @@ black==24.1.1
 isort==5.13.2
 boto3==1.34.34
 mixpanel==4.10.0
+fpdf

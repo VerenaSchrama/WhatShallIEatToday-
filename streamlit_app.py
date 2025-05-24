@@ -289,3 +289,19 @@ if st.session_state.guest_mode:
         st.session_state.personalization_completed = False
         st.session_state.chat_history = []
         st.rerun()
+
+# --- Always-Visible Personalization Summary in Sidebar ---
+st.sidebar.markdown("## Your Personalization Summary")
+if st.session_state.get("phase"):
+    st.sidebar.markdown(f"**Cycle phase:** {st.session_state.phase}")
+else:
+    st.sidebar.markdown("**Cycle phase:** _Not set_")
+if st.session_state.get("support_goal"):
+    st.sidebar.markdown(f"**Support goal:** {st.session_state.support_goal}")
+else:
+    st.sidebar.markdown("**Support goal:** _Not set_")
+if st.session_state.get("dietary_preferences"):
+    st.sidebar.markdown(f"**Dietary preferences:** {', '.join(st.session_state.dietary_preferences)}")
+else:
+    st.sidebar.markdown("**Dietary preferences:** _None_")
+st.sidebar.markdown("---")

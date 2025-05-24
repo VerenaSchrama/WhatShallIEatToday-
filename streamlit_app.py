@@ -244,13 +244,16 @@ st.markdown('''
 </style>
 ''', unsafe_allow_html=True)
 
-if st.session_state.chat_history:
+if st.session_state.get("personalization_completed"):
     st.header("Chat History")
-    for role, msg in st.session_state.chat_history:
-        if role == "user":
-            st.markdown(f'''<div class="chat-bubble-user"><div class="speaker-label">You</div>{msg}</div>''', unsafe_allow_html=True)
-        else:
-            st.markdown(f'''<div class="chat-bubble-assistant"><div class="speaker-label">Assistant</div>{msg}</div>''', unsafe_allow_html=True)
+    if st.session_state.chat_history:
+        for role, msg in st.session_state.chat_history:
+            if role == "user":
+                st.markdown(f'''<div class="chat-bubble-user"><div class="speaker-label">You</div>{msg}</div>''', unsafe_allow_html=True)
+            else:
+                st.markdown(f'''<div class="chat-bubble-assistant"><div class="speaker-label">Assistant</div>{msg}</div>''', unsafe_allow_html=True)
+    else:
+        st.markdown('<div style="color:#888; margin:2em 0; text-align:center;">Start the conversation by asking your first question below!</div>', unsafe_allow_html=True)
 
 # Input at the bottom, always visible after latest message
 if st.session_state.get("clear_chat_input"):

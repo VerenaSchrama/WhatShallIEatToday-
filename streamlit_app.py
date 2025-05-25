@@ -259,7 +259,7 @@ if st.session_state.get("personalization_completed"):
 
     # --- Suggested Questions in Main Chat Interface ---
     suggested_questions = [
-        "Give me a personal overview of the 4 cycle phases and an extensive list of foods you recommend.",
+        "Give me a personal overview of foods for each of the 4 cycle phases to start experimenting with.",
         "What foods are best for my current cycle phase?",
         "Give me a 3-day breakfast plan.",
         "Why is organic food important for my cycle?",
@@ -314,14 +314,6 @@ if st.session_state.logged_in:
         st.session_state.chat_history = []
         st.rerun()
 
-# Exit guest mode button
-if st.session_state.guest_mode:
-    if st.button("Exit Guest Mode"):
-        st.session_state.guest_mode = False
-        st.session_state.personalization_completed = False
-        st.session_state.chat_history = []
-        st.rerun()
-
 # --- Always-Visible Personalization Summary in Sidebar ---
 st.sidebar.markdown("## Your Personalization Summary")
 if st.session_state.get("phase"):
@@ -362,6 +354,15 @@ if st.sidebar.button("Submit Feedback", key="submit_feedback"):
             st.sidebar.error(f"Error submitting feedback: {str(e)}")
     else:
         st.sidebar.warning("Please enter your feedback before submitting.")
+
+# Place Exit Guest Mode button at the bottom of the sidebar
+if st.session_state.guest_mode:
+    st.sidebar.markdown("")  # Optional: add spacing
+    if st.sidebar.button("Exit Guest Mode", key="sidebar_exit_guest"):
+        st.session_state.guest_mode = False
+        st.session_state.personalization_completed = False
+        st.session_state.chat_history = []
+        st.rerun()
 
 # After rendering chat bubbles, show download if available
 def recommendations_to_pdf(text):
@@ -408,3 +409,4 @@ if st.session_state.get("recommendations_response"):
 if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
+

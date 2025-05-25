@@ -22,6 +22,20 @@ import json
 from fpdf import FPDF
 import time
 
+# Add a non-widget element at the very top to help prevent auto-scroll
+st.markdown("\n")
+
+# Always scroll to top on load/rerun
+st.markdown(
+    """
+    <script>
+        window.parent.document.documentElement.scrollTop = 0;
+        window.parent.scrollTo(0, 0);
+    </script>
+    """,
+    unsafe_allow_html=True
+)
+
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -308,7 +322,7 @@ st.sidebar.markdown("---")
 # --- Suggested Questions Panel in Sidebar ---
 suggested_questions = [
     "Give me a personal overview of foods for each of the 4 cycle phases to start experimenting with.",
-    "Review my previousmeal choices and give me feedback.",
+    "Review my previous meal choices and give me feedback.",
     "What foods are best for my current cycle phase?",
     "Give me a 3-day breakfast plan.",
     "Why is organic food important for my cycle?",

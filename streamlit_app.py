@@ -270,20 +270,26 @@ if st.session_state.get("personalization_completed"):
     for i, question in enumerate(suggested_questions):
         if st.button(question, key=f"main_suggested_q_{i}"):
             add_to_chat_history("user", question)
-            try:
-                qa_chain = load_llm_chain()
-                response = qa_chain.run({
-                    "phase": st.session_state.phase,
-                    "goal": st.session_state.support_goal,
-                    "diet": ", ".join(st.session_state.dietary_preferences),
-                    "question": question
-                })
+            # Custom response for meal review question
+            if question == "Review my previousmeal choices and give me feedback.":
+                response = "Please log your meals in the following format: Day + Meal ingredients."
                 add_to_chat_history("assistant", response)
-                if i == 0:
-                    st.session_state["recommendations_response"] = response
                 st.rerun()
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+            else:
+                try:
+                    qa_chain = load_llm_chain()
+                    response = qa_chain.run({
+                        "phase": st.session_state.phase,
+                        "goal": st.session_state.support_goal,
+                        "diet": ", ".join(st.session_state.dietary_preferences),
+                        "question": question
+                    })
+                    add_to_chat_history("assistant", response)
+                    if i == 0:
+                        st.session_state["recommendations_response"] = response
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
 
 # Input at the bottom, always visible after latest message
 if st.session_state.get("clear_chat_input"):

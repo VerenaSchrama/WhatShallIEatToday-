@@ -309,33 +309,12 @@ if st.session_state.get("dietary_preferences"):
     st.sidebar.markdown(f"**Dietary preferences:** {', '.join(st.session_state.dietary_preferences)}")
 else:
     st.sidebar.markdown("**Dietary preferences:** _None_")
-st.sidebar.markdown("---")
 
-# --- Feedback Box at the bottom of the sidebar ---
-if st.session_state.get("clear_feedback_text"):
-    st.session_state["feedback_text"] = ""
-    st.session_state["clear_feedback_text"] = False
+# Separator between summary and suggested questions
 st.sidebar.markdown("---")
-st.sidebar.markdown("## Feedback")
-feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
-if st.sidebar.button("Submit Feedback", key="submit_feedback"):
-    if feedback_text.strip():
-        feedback_data = {
-            "user_id": st.session_state.get("user_id", "guest"),
-            "timestamp": datetime.utcnow().isoformat(),
-            "feedback": feedback_text.strip()
-        }
-        try:
-            supabase.table("feedback").insert(feedback_data).execute()
-            st.sidebar.success("Thank you for your feedback!")
-            st.session_state["clear_feedback_text"] = True
-            st.rerun()
-        except Exception as e:
-            st.sidebar.error(f"Error submitting feedback: {str(e)}")
-    else:
-        st.sidebar.warning("Please enter your feedback before submitting.")
 
 # --- Suggested Questions Panel in Sidebar ---
+st.sidebar.markdown("## 💡 Suggested Questions")
 suggested_questions = [
     "Give me a personal overview of the 4 cycle phases and an extensive list of foods you recommend.",
     "What foods are best for my current cycle phase?",
@@ -343,8 +322,6 @@ suggested_questions = [
     "Why is organic food important for my cycle?",
     "What nutritional seeds support my phase (seed syncing)?"
 ]
-
-st.sidebar.markdown("## 💡 Suggested Questions")
 for i, question in enumerate(suggested_questions):
     if st.sidebar.button(question, key=f"suggested_q_{i}"):
         # Add the question to chat as if the user typed it
@@ -364,6 +341,32 @@ for i, question in enumerate(suggested_questions):
             st.rerun()
         except Exception as e:
             st.error(f"Error: {str(e)}")
+
+# Separator between suggested questions and feedback
+st.sidebar.markdown("---")
+
+# --- Feedback Box at the bottom of the sidebar ---
+if st.session_state.get("clear_feedback_text"):
+    st.session_state["feedback_text"] = ""
+    st.session_state["clear_feedback_text"] = False
+st.sidebar.markdown("## Feedback")
+feedback_text = st.sidebar.text_area("Have feedback or a question I didn't answer?", key="feedback_text")
+if st.sidebar.button("Submit Feedback", key="submit_feedback"):
+    if feedback_text.strip():
+        feedback_data = {
+            "user_id": st.session_state.get("user_id", "guest"),
+            "timestamp": datetime.utcnow().isoformat(),
+            "feedback": feedback_text.strip()
+        }
+        try:
+            supabase.table("feedback").insert(feedback_data).execute()
+            st.sidebar.success("Thank you for your feedback!")
+            st.session_state["clear_feedback_text"] = True
+            st.rerun()
+        except Exception as e:
+            st.sidebar.error(f"Error submitting feedback: {str(e)}")
+    else:
+        st.sidebar.warning("Please enter your feedback before submitting.")
 
 # After rendering chat bubbles, show download if available
 def recommendations_to_pdf(text):

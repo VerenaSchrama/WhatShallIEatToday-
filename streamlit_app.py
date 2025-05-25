@@ -436,3 +436,38 @@ if not st.session_state.get("personalization_completed"):
     st.info("Please complete personalization above.")
     st.stop()
 
+# Add a button at the top of the sidebar for 'More info & guidance'
+if 'show_info_page' not in st.session_state:
+    st.session_state['show_info_page'] = False
+
+def show_info_page():
+    st.title("More Info & Guidance")
+    st.markdown("""
+    ## Welcome to HerFoodCode!
+    HerFoodCode is your scientific cycle nutrition assistant. This app helps you personalize your nutrition and wellness journey based on your menstrual cycle phase, support goals, and dietary preferences.
+
+    ### How to Use the App
+    1. **Personalize:** Fill in your current cycle phase, support goal, and dietary preferences.
+    2. **Chat:** Ask questions or use the suggested questions to get science-backed nutrition advice tailored to your needs.
+    3. **Download:** Download your recommendations as PDF or text.
+    4. **Feedback:** Use the feedback box to share your thoughts or ask for more help.
+
+    ### About HerFoodCode
+    HerFoodCode is designed to empower you with knowledge and practical tips for every phase of your cycle. All recommendations are based on the latest nutritional science and are tailored to your unique needs.
+
+    If you have any questions, feel free to use the chat or the feedback box!
+    """)
+    if st.button("Back to app", key="back_to_app_btn"):
+        st.session_state['show_info_page'] = False
+        st.rerun()
+
+# Place the button at the very top of the sidebar
+if st.sidebar.button("More info & guidance", key="info_btn"):
+    st.session_state['show_info_page'] = True
+    st.rerun()
+
+# Show info page if selected, otherwise show main app
+if st.session_state.get('show_info_page', False):
+    show_info_page()
+    st.stop()
+

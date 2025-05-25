@@ -25,12 +25,14 @@ import time
 # Add a non-widget element at the very top to help prevent auto-scroll
 st.markdown("\n")
 
-# Always scroll to top on load/rerun
+# Always scroll to top on load/rerun (delayed for guaranteed fix)
 st.markdown(
     """
     <script>
-        window.parent.document.documentElement.scrollTop = 0;
-        window.parent.scrollTo(0, 0);
+        setTimeout(function() {
+            window.parent.document.documentElement.scrollTop = 0;
+            window.parent.scrollTo(0, 0);
+        }, 500);
     </script>
     """,
     unsafe_allow_html=True

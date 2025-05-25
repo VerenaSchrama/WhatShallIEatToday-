@@ -141,5 +141,5 @@ def render_personalization_summary():
     st.markdown("---")
 
     # Show example questions here
-    render_suggested_questions()
+    # render_suggested_questions()  # Removed to prevent main area rendering
 

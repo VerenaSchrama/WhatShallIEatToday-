@@ -257,6 +257,33 @@ if st.session_state.get("personalization_completed"):
     else:
         st.markdown('<div style="color:#888; margin:2em 0; text-align:center;">Start the conversation by asking your first question below!</div>', unsafe_allow_html=True)
 
+    # --- Suggested Questions in Main Chat Interface ---
+    suggested_questions = [
+        "Give me a personal overview of the 4 cycle phases and an extensive list of foods you recommend.",
+        "What foods are best for my current cycle phase?",
+        "Give me a 3-day breakfast plan.",
+        "Why is organic food important for my cycle?",
+        "What nutritional seeds support my phase (seed syncing)?"
+    ]
+    st.markdown("#### 💡 Suggested Questions")
+    for i, question in enumerate(suggested_questions):
+        if st.button(question, key=f"main_suggested_q_{i}"):
+            add_to_chat_history("user", question)
+            try:
+                qa_chain = load_llm_chain()
+                response = qa_chain.run({
+                    "phase": st.session_state.phase,
+                    "goal": st.session_state.support_goal,
+                    "diet": ", ".join(st.session_state.dietary_preferences),
+                    "question": question
+                })
+                add_to_chat_history("assistant", response)
+                if i == 0:
+                    st.session_state["recommendations_response"] = response
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
+
 # Input at the bottom, always visible after latest message
 if st.session_state.get("clear_chat_input"):
     st.session_state["chat_input"] = ""
@@ -311,38 +338,6 @@ else:
     st.sidebar.markdown("**Dietary preferences:** _None_")
 
 # Separator between summary and suggested questions
-st.sidebar.markdown("---")
-
-# --- Suggested Questions Panel in Sidebar ---
-st.sidebar.markdown("## 💡 Suggested Questions")
-suggested_questions = [
-    "Give me a personal overview of the 4 cycle phases and an extensive list of foods you recommend.",
-    "What foods are best for my current cycle phase?",
-    "Give me a 3-day breakfast plan.",
-    "Why is organic food important for my cycle?",
-    "What nutritional seeds support my phase (seed syncing)?"
-]
-for i, question in enumerate(suggested_questions):
-    if st.sidebar.button(question, key=f"suggested_q_{i}"):
-        # Add the question to chat as if the user typed it
-        add_to_chat_history("user", question)
-        try:
-            qa_chain = load_llm_chain()
-            response = qa_chain.run({
-                "phase": st.session_state.phase,
-                "goal": st.session_state.support_goal,
-                "diet": ", ".join(st.session_state.dietary_preferences),
-                "question": question
-            })
-            add_to_chat_history("assistant", response)
-            # If it's the first suggested question, store the response for download
-            if i == 0:
-                st.session_state["recommendations_response"] = response
-            st.rerun()
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
-
-# Separator between suggested questions and feedback
 st.sidebar.markdown("---")
 
 # --- Feedback Box at the bottom of the sidebar ---

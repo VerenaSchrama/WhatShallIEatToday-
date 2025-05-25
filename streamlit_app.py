@@ -260,6 +260,7 @@ if st.session_state.get("personalization_completed"):
     # --- Suggested Questions in Main Chat Interface ---
     suggested_questions = [
         "Give me a personal overview of foods for each of the 4 cycle phases to start experimenting with.",
+        "Review my previousmeal choices and give me feedback.",
         "What foods are best for my current cycle phase?",
         "Give me a 3-day breakfast plan.",
         "Why is organic food important for my cycle?",
@@ -355,9 +356,9 @@ if st.sidebar.button("Submit Feedback", key="submit_feedback"):
     else:
         st.sidebar.warning("Please enter your feedback before submitting.")
 
-# Place Exit Guest Mode button at the bottom of the sidebar
+# Divider and Exit Guest Mode button at the bottom of the sidebar
 if st.session_state.guest_mode:
-    st.sidebar.markdown("")  # Optional: add spacing
+    st.sidebar.markdown("---")
     if st.sidebar.button("Exit Guest Mode", key="sidebar_exit_guest"):
         st.session_state.guest_mode = False
         st.session_state.personalization_completed = False

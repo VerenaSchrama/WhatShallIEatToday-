@@ -47,8 +47,9 @@ def show_info_page():
         st.session_state['show_info_page'] = False
         st.rerun()
 
-# Place the button at the very top of the sidebar
-if st.sidebar.button("More info & guidance", key="info_btn"):
+# Place the button at the very top of the sidebar, before any other sidebar code
+top_sidebar_placeholder = st.sidebar.empty()
+if top_sidebar_placeholder.button("More info & guidance", key="info_btn"):
     st.session_state['show_info_page'] = True
     st.rerun()
 

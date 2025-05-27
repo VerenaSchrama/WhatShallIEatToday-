@@ -170,6 +170,28 @@ if not st.session_state.logged_in and not st.session_state.guest_mode:
     
     st.stop()
 
+# --- EMAIL VERIFICATION HANDLER ---
+query_params = st.query_params
+if "token" in query_params and st.experimental_get_query_params().get("verify") is not None:
+    token = query_params["token"][0]
+    st.header("Email Verification")
+    with st.spinner("Verifying your email..."):
+        success, msg = auth_service.verify_email(token)
+        if success:
+            st.success("Your email has been verified! Redirecting to login page...")
+            # Redirect to login after 2 seconds
+            st.markdown("""
+                <script>
+                    setTimeout(function() {
+                        window.location.href = window.location.origin;
+                    }, 2000);
+                </script>
+            """, unsafe_allow_html=True)
+        else:
+            st.error(f"Verification failed: {msg}")
+    st.stop()
+# --- END EMAIL VERIFICATION HANDLER ---
+
 # Handle password reset via token in URL
 query_params = st.query_params
 if "token" in query_params:

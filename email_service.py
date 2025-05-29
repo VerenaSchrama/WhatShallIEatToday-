@@ -35,7 +35,10 @@ class EmailService:
             'exp': datetime.utcnow() + timedelta(hours=24),
             'type': 'verification'
         }
-        return jwt.encode(payload, SUPABASE_SERVICE_ROLE_KEY, algorithm='HS256')
+        token = jwt.encode(payload, SUPABASE_SERVICE_ROLE_KEY, algorithm='HS256')
+        print("GENERATING TOKEN FOR USER ID:", user_id)
+        print("GENERATED TOKEN:", token)
+        return token
 
     def _create_reset_token(self, user_id: str) -> str:
         payload = {

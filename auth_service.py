@@ -219,18 +219,17 @@ class AuthService:
 
     def verify_email(self, token: str) -> tuple[bool, str]:
         try:
+            print("TOKEN RECEIVED FOR VERIFICATION:", token)
             success, user_id, token_type = self.email_service.verify_token(token)
+            print("DECODED USER ID FROM TOKEN:", user_id)
             if not success or token_type != 'verification':
                 self.logger.log_auth_event('email_verify', success=False, details={'error': 'invalid_token'})
                 return False, ERROR_MESSAGES["invalid_token"]
-
             self.supabase.table("users").update({
                 "email_verified": True
             }).eq("id", user_id).execute()
-
             self.logger.log_auth_event('email_verify', user_id, success=True)
             return True, SUCCESS_MESSAGES["email_verified"]
-
         except Exception as e:
             self.logger.log_auth_event('email_verify', success=False, details={'error': str(e)})
             return False, f"Email verification error: {str(e)}"

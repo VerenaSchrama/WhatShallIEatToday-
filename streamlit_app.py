@@ -108,9 +108,6 @@ st.image("images/HerFoodCodeLOGO.png", width=120)
 # Title
 st.title("Your Scientific Cycle Nutrition Assistant")
 
-# Debug output for environment keys
-st.write("SUPABASE_SERVICE_ROLE_KEY:", os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
-
 query_params = st.query_params
 
 # --- EMAIL VERIFICATION HANDLER ---

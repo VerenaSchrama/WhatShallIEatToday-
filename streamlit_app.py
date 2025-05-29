@@ -108,6 +108,24 @@ st.image("images/HerFoodCodeLOGO.png", width=120)
 # Title
 st.title("Your Scientific Cycle Nutrition Assistant")
 
+query_params = st.query_params
+
+# --- EMAIL VERIFICATION HANDLER ---
+if "token" in query_params and st.session_state.get("show_info_page", False) is False:
+    token = query_params["token"][0]
+    st.header("Email Verification")
+    with st.spinner("Verifying your email..."):
+        success, msg = auth_service.verify_email(token)
+        if success:
+            st.success("Verification successful! Welcome!")
+            if st.button("Go to login page and get started"):
+                st.experimental_set_query_params()
+                st.rerun()
+        else:
+            st.error(f"Verification failed: {msg}")
+    st.stop()
+# --- END EMAIL VERIFICATION HANDLER ---
+
 # Login/Register or Guest Access
 if not st.session_state.logged_in and not st.session_state.guest_mode:
     st.write("Welcome! Choose how you'd like to proceed:")
@@ -170,23 +188,6 @@ if not st.session_state.logged_in and not st.session_state.guest_mode:
             st.rerun()
     
     st.stop()
-
-# --- EMAIL VERIFICATION HANDLER ---
-query_params = st.query_params
-if "token" in query_params and st.session_state.get("show_info_page", False) is False:
-    token = query_params["token"][0]
-    st.header("Email Verification")
-    with st.spinner("Verifying your email..."):
-        success, msg = auth_service.verify_email(token)
-        if success:
-            st.success("Verification successful! Welcome!")
-            if st.button("Go to login page and get started"):
-                st.experimental_set_query_params()
-                st.rerun()
-        else:
-            st.error(f"Verification failed: {msg}")
-    st.stop()
-# --- END EMAIL VERIFICATION HANDLER ---
 
 # Handle password reset via token in URL
 query_params = st.query_params

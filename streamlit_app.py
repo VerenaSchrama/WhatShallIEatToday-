@@ -21,6 +21,7 @@ import streamlit.components.v1 as components
 import json
 from fpdf import FPDF
 import time
+import logging
 
 # More info & guidance page logic at the very top
 if 'show_info_page' not in st.session_state:
@@ -109,10 +110,14 @@ st.image("images/HerFoodCodeLOGO.png", width=120)
 st.title("Your Scientific Cycle Nutrition Assistant")
 
 query_params = st.query_params
-
-# --- EMAIL VERIFICATION HANDLER ---
+logging.warning(f"RAW QUERY PARAMS: {query_params}")
 if "token" in query_params and st.session_state.get("show_info_page", False) is False:
-    token = query_params["token"][0]
+    token_param = query_params["token"]
+    # Handle both list and string types
+    if isinstance(token_param, list):
+        token = token_param[0]
+    else:
+        token = token_param
     st.header("Email Verification")
     with st.spinner("Verifying your email..."):
         success, msg = auth_service.verify_email(token)

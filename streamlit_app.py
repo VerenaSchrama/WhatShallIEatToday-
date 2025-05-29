@@ -120,9 +120,10 @@ if not st.session_state.logged_in and not st.session_state.guest_mode:
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
 
-        # Add 'Forgot password?' button
-        if st.button("Forgot password?"):
-            st.session_state.show_reset = True
+        # Show 'Forgot password?' button only in Login mode
+        if auth_mode == "Login":
+            if st.button("Forgot password?"):
+                st.session_state.show_reset = True
 
         # Show password reset form
         if st.session_state.get("show_reset"):
@@ -177,10 +178,9 @@ if "token" in query_params and st.session_state.get("show_info_page", False) is 
     st.header("Email Verification")
     with st.spinner("Verifying your email..."):
         success, msg = auth_service.verify_email(token)
-        st.write(f"Verification result: {success}, message: {msg}")
         if success:
-            st.success("Your email has been verified!")
-            if st.button("Login and get started here!"):
+            st.success("Verification successful! Welcome!")
+            if st.button("Go to login page and get started"):
                 st.experimental_set_query_params()
                 st.rerun()
         else:

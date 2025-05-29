@@ -319,7 +319,7 @@ st.markdown('''
 if st.session_state.get("personalization_completed"):
     st.header("Chat History")
     if st.session_state.chat_history:
-    for role, msg in st.session_state.chat_history:
+        for role, msg in st.session_state.chat_history:
             if role == "user":
                 st.markdown(f'''<div class="chat-bubble-user"><div class="speaker-label">You</div>{msg}</div>''', unsafe_allow_html=True)
             else:

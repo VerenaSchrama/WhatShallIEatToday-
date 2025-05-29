@@ -12,7 +12,6 @@ from config import (
     SUCCESS_MESSAGES, 
     SESSION_TIMEOUT,
     SUPABASE_URL,
-    SUPABASE_KEY,
     SUPABASE_SERVICE_ROLE_KEY,
     SUPPORT_OPTIONS,
     DIETARY_OPTIONS,
@@ -76,7 +75,7 @@ st.markdown(
 )
 
 # Initialize Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 auth_service = AuthService()
 profile_service = ProfileService()
@@ -110,7 +109,6 @@ st.image("images/HerFoodCodeLOGO.png", width=120)
 st.title("Your Scientific Cycle Nutrition Assistant")
 
 # Debug output for environment keys
-st.write("SUPABASE_KEY:", os.getenv("SUPABASE_KEY"))
 st.write("SUPABASE_SERVICE_ROLE_KEY:", os.getenv("SUPABASE_SERVICE_ROLE_KEY"))
 
 query_params = st.query_params

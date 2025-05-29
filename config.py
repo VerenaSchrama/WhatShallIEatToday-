@@ -22,15 +22,15 @@ print(f"SUPABASE_SERVICE_ROLE_KEY first 10 chars: {SUPABASE_SERVICE_ROLE_KEY[:10
 print(f"SUPABASE_SERVICE_ROLE_KEY last 10 chars: {SUPABASE_SERVICE_ROLE_KEY[-10:] if SUPABASE_SERVICE_ROLE_KEY else 'None'}")
 print("==================================")
 
-# Use service role key for admin operations
-SUPABASE_KEY = SUPABASE_SERVICE_ROLE_KEY
+# Use service role key for admin and JWT operations
+JWT_SECRET = SUPABASE_SERVICE_ROLE_KEY
 
 # Verify key format
-if SUPABASE_KEY:
-    if not SUPABASE_KEY.startswith('eyJ'):
-        print("WARNING: SUPABASE_KEY does not start with 'eyJ' - this might indicate an invalid JWT format")
-    if len(SUPABASE_KEY) < 100:
-        print("WARNING: SUPABASE_KEY seems too short for a valid JWT token")
+if JWT_SECRET:
+    if not JWT_SECRET.startswith('eyJ'):
+        print("WARNING: JWT_SECRET does not start with 'eyJ' - this might indicate an invalid JWT format")
+    if len(JWT_SECRET) < 100:
+        print("WARNING: JWT_SECRET seems too short for a valid JWT token")
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")

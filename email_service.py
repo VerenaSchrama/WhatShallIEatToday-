@@ -9,10 +9,12 @@ load_dotenv(override=True)
 
 
 from config import (
-    SUPABASE_KEY,
+    SUPABASE_SERVICE_ROLE_KEY,
     ERROR_MESSAGES,
     SUCCESS_MESSAGES
 )
+
+print("EMAIL SERVICE SUPABASE_SERVICE_ROLE_KEY:", SUPABASE_SERVICE_ROLE_KEY)
 
 class EmailService:
     def __init__(self):
@@ -33,7 +35,7 @@ class EmailService:
             'exp': datetime.utcnow() + timedelta(hours=24),
             'type': 'verification'
         }
-        return jwt.encode(payload, SUPABASE_KEY, algorithm='HS256')
+        return jwt.encode(payload, SUPABASE_SERVICE_ROLE_KEY, algorithm='HS256')
 
     def _create_reset_token(self, user_id: str) -> str:
         payload = {
@@ -41,7 +43,7 @@ class EmailService:
             'exp': datetime.utcnow() + timedelta(hours=1),
             'type': 'reset'
         }
-        return jwt.encode(payload, SUPABASE_KEY, algorithm='HS256')
+        return jwt.encode(payload, SUPABASE_SERVICE_ROLE_KEY, algorithm='HS256')
 
     def _send_email(self, to_email: str, subject: str, html_content: str) -> bool:
         try:
@@ -117,7 +119,7 @@ class EmailService:
 
     def verify_token(self, token: str) -> tuple[bool, str, str]:
         try:
-            payload = jwt.decode(token, SUPABASE_KEY, algorithms=['HS256'])
+            payload = jwt.decode(token, SUPABASE_SERVICE_ROLE_KEY, algorithms=['HS256'])
             return True, payload['user_id'], payload['type']
         except jwt.ExpiredSignatureError:
             return False, "", "Token has expired"

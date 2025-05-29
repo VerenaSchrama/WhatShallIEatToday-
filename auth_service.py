@@ -226,9 +226,15 @@ class AuthService:
             if not success or token_type != 'verification':
                 self.logger.log_auth_event('email_verify', success=False, details={'error': 'invalid_token'})
                 return False, ERROR_MESSAGES["invalid_token"]
-            self.supabase.table("users").update({
+            # Update email_verified, do not assume response contains updated row
+            update_response = self.supabase.table("users").update({
                 "email_verified": True
             }).eq("id", user_id).execute()
+            # Optionally, fetch the user to confirm
+            # user_row = self.supabase.table("users").select("email_verified").eq("id", user_id).single().execute()
+            # if not user_row.data or not user_row.data.get('email_verified'):
+            #     self.logger.log_auth_event('email_verify', user_id, success=False, details={'error': 'email_verified_not_set'})
+            #     return False, "Email verification error: could not set email_verified."
             self.logger.log_auth_event('email_verify', user_id, success=True)
             return True, SUCCESS_MESSAGES["email_verified"]
         except Exception as e:

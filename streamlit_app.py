@@ -172,21 +172,17 @@ if not st.session_state.logged_in and not st.session_state.guest_mode:
 
 # --- EMAIL VERIFICATION HANDLER ---
 query_params = st.query_params
-if "token" in query_params and st.experimental_get_query_params().get("verify") is not None:
+if "token" in query_params and st.session_state.get("show_info_page", False) is False:
     token = query_params["token"][0]
     st.header("Email Verification")
     with st.spinner("Verifying your email..."):
         success, msg = auth_service.verify_email(token)
+        st.write(f"Verification result: {success}, message: {msg}")
         if success:
-            st.success("Your email has been verified! Redirecting to login page...")
-            # Redirect to login after 2 seconds
-            st.markdown("""
-                <script>
-                    setTimeout(function() {
-                        window.location.href = window.location.origin;
-                    }, 2000);
-                </script>
-            """, unsafe_allow_html=True)
+            st.success("Your email has been verified!")
+            if st.button("Login and get started here!"):
+                st.experimental_set_query_params()
+                st.rerun()
         else:
             st.error(f"Verification failed: {msg}")
     st.stop()
@@ -323,7 +319,7 @@ st.markdown('''
 if st.session_state.get("personalization_completed"):
     st.header("Chat History")
     if st.session_state.chat_history:
-        for role, msg in st.session_state.chat_history:
+    for role, msg in st.session_state.chat_history:
             if role == "user":
                 st.markdown(f'''<div class="chat-bubble-user"><div class="speaker-label">You</div>{msg}</div>''', unsafe_allow_html=True)
             else:

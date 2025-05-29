@@ -17,6 +17,7 @@ from config import (
 from email_service import EmailService
 from logging_service import LoggingService
 import secrets
+import logging
 
 class AuthService:
     def __init__(self):
@@ -219,9 +220,9 @@ class AuthService:
 
     def verify_email(self, token: str) -> tuple[bool, str]:
         try:
-            print("TOKEN RECEIVED FOR VERIFICATION:", token)
+            logging.warning(f"TOKEN RECEIVED FOR VERIFICATION: {token}")
             success, user_id, token_type = self.email_service.verify_token(token)
-            print("DECODED USER ID FROM TOKEN:", user_id)
+            logging.warning(f"DECODED USER ID FROM TOKEN: {user_id}")
             if not success or token_type != 'verification':
                 self.logger.log_auth_event('email_verify', success=False, details={'error': 'invalid_token'})
                 return False, ERROR_MESSAGES["invalid_token"]

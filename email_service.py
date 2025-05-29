@@ -5,6 +5,7 @@ import os
 from datetime import datetime, timedelta
 import jwt
 from dotenv import load_dotenv
+import logging
 load_dotenv(override=True)
 
 
@@ -36,8 +37,8 @@ class EmailService:
             'type': 'verification'
         }
         token = jwt.encode(payload, SUPABASE_SERVICE_ROLE_KEY, algorithm='HS256')
-        print("GENERATING TOKEN FOR USER ID:", user_id)
-        print("GENERATED TOKEN:", token)
+        logging.warning(f"GENERATING TOKEN FOR USER ID: {user_id}")
+        logging.warning(f"GENERATED TOKEN: {token}")
         return token
 
     def _create_reset_token(self, user_id: str) -> str:
